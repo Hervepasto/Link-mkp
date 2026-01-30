@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: link-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node backend/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Ajoute ici les autres variables d'environnement nécessaires (ex: DATABASE_URL, JWT_SECRET, etc)
+    autoDeploy: true
+    rootDir: .
+
+  - type: static
+    name: link-frontend
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    plan: free
+    autoDeploy: true
+    rootDir: .
