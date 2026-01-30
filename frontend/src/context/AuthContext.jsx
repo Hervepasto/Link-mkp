@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -25,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      const response = await axios.get('/api/users/me');
+      const response = await axios.get(`${API_URL}/users/me`);
       setUser(response.data.user);
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -42,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   }, [fetchUser]);
 
   const login = async (whatsappNumber, password) => {
-    const response = await axios.post('/api/auth/login', { whatsappNumber, password });
+    const response = await axios.post(`${API_URL}/auth/login`, { whatsappNumber, password });
     const { token, user: userData } = response.data;
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -51,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (userData) => {
-    const response = await axios.post('/api/auth/register', userData);
+    const response = await axios.post(`${API_URL}/auth/register`, userData);
     const { token, user: newUser } = response.data;
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;

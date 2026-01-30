@@ -38,6 +38,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Link API is running' });
 });
 
+// Démarrer le serveur Express
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 // Error handler
 app.use(errorHandler);
 

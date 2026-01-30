@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL;
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
@@ -25,7 +27,7 @@ const Dashboard = () => {
 
   const fetchSellerProducts = async () => {
     try {
-      const response = await axios.get('/api/products');
+      const response = await axios.get(`${API_URL}/products`);
       const myProducts = response.data.products.filter(
         (p) => p.seller_id === user.id
       );
@@ -39,7 +41,7 @@ const Dashboard = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get('/api/comments/notifications');
+      const response = await axios.get(`${API_URL}/comments/notifications`);
       setNotifications(response.data.notifications.filter((n) => !n.is_read));
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -55,7 +57,7 @@ const Dashboard = () => {
     if (!productId) return;
 
     try {
-      await axios.delete(`/api/products/${productId}`);
+      await axios.delete(`${API_URL}/products/${productId}`);
       setProducts(products.filter((p) => p.id !== productId));
       setDeleteModal({ isOpen: false, productId: null });
       showSuccess('Produit supprimé avec succès');

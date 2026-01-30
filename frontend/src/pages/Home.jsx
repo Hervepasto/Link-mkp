@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL;
 import ProductCard from '../components/ProductCard';
 import { useAuth } from '../context/AuthContext';
 
@@ -23,7 +25,7 @@ const Home = () => {
         : { headers: { 'Cache-Control': 'no-cache' } };
       
       // Ajouter un timestamp pour éviter le cache
-      const response = await axios.get(`/api/products?_t=${Date.now()}`, config);
+      const response = await axios.get(`${API_URL}/products?_t=${Date.now()}`, config);
       setProducts(response.data.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
