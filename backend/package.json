@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js",
+    "start": "node scripts/init-db.js && node server.js",
     "db:migrate": "node scripts/migrate.js",
     "db:init": "node scripts/init-db.js"
   },
