@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import axios from 'axios';
+import { apiUrl, fileUrl } from '../config/urls';
 
 const MediaCarousel = ({ media = [], className = '', onImageClick, productId, onViewRegistered }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,7 +16,7 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
     try {
       const token = localStorage.getItem('token');
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-      const response = await axios.post(`/api/products/${productId}/view`, {}, config);
+      const response = await axios.post(apiUrl(`/products/${productId}/view`), {}, config);
       setHasRegisteredView(true);
       
       // Notifier le parent du nouveau compteur de vues
@@ -83,11 +84,6 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
     }
   };
 
-  // Déterminer dynamiquement l'URL du backend
-  const backendHost = window.location.hostname;
-  const backendPort = 5000;
-  const backendUrl = `http://${backendHost}:${backendPort}`;
-
   return (
     <div className={`relative ${className} overflow-hidden`}>
       <div 
@@ -96,7 +92,7 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
       >
         {currentMedia.media_type === 'video' ? (
           <video
-            src={`${backendUrl}${currentMedia.url}`}
+            src={fileUrl(currentMedia.url)}
             className="max-w-full max-h-full object-contain"
             controls
             autoPlay
@@ -106,7 +102,7 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
           />
         ) : (
           <img
-            src={`${backendUrl}${currentMedia.url}`}
+            src={fileUrl(currentMedia.url)}
             alt={`Media ${currentIndex + 1}`}
             className="max-w-full max-h-full object-contain"
             style={{ display: 'block' }}

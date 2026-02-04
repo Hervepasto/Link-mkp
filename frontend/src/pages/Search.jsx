@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { apiUrl } from '../config/urls';
 import { Link } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi';
 import ProductCard from '../components/ProductCard';
@@ -37,8 +38,8 @@ const Search = () => {
         params.append('keyword', filters.keyword);
       }
 
-      const endpoint = searchType === 'products' ? '/api/search/products' : '/api/search/sellers';
-      const response = await axios.get(`${endpoint}?${params.toString()}`);
+      const endpoint = searchType === 'products' ? '/search/products' : '/search/sellers';
+      const response = await axios.get(apiUrl(`${endpoint}?${params.toString()}`));
       
       setResults(searchType === 'products' ? response.data.products : response.data.sellers);
     } catch (error) {

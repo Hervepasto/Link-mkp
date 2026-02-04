@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
@@ -93,7 +94,7 @@ const ProductDetail = () => {
         ? { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         : {};
       
-      const response = await axios.get(`/api/products/${id}`, config);
+      const response = await axios.get(apiUrl(`/products/${id}`), config);
       setProduct(response.data.product);
       setInterested(response.data.product.is_interested || false);
     } catch (error) {
@@ -106,7 +107,7 @@ const ProductDetail = () => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`/api/comments/product/${id}`);
+      const response = await axios.get(apiUrl(`/comments/product/${id}`));
       setComments(response.data.comments);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -134,7 +135,7 @@ const ProductDetail = () => {
 
     try {
       console.log('Sending interest request to:', `/api/products/${id}/interested`);
-      const response = await axios.post(`/api/products/${id}/interested`, {}, {
+      const response = await axios.post(apiUrl(`/products/${id}/interested`), {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -180,7 +181,7 @@ const ProductDetail = () => {
     if (!commentText.trim()) return;
 
     try {
-      await axios.post('/api/comments', {
+      await axios.post(apiUrl('/comments'), {
         productId: id,
         content: commentText,
       });
@@ -226,7 +227,7 @@ const ProductDetail = () => {
 
   const handleRepostConfirm = async () => {
     try {
-      const response = await axios.post(`/api/products/${id}/repost`, {}, {
+      const response = await axios.post(apiUrl(`/products/${id}/repost`), {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }

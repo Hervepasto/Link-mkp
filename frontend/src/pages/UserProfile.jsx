@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import ProductCard from '../components/ProductCard';
@@ -23,7 +24,7 @@ const UserProfile = () => {
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await axios.get(`/api/users/${id}?_t=${Date.now()}`);
+      const response = await axios.get(apiUrl(`/users/${id}?_t=${Date.now()}`));
       setUser(response.data.user);
     } catch (error) {
       console.error('Error fetching user:', error);
@@ -40,7 +41,7 @@ const UserProfile = () => {
         }
       };
       // Ajouter un timestamp pour éviter le cache
-      const response = await axios.get(`/api/products?seller=${id}&_t=${Date.now()}`, config);
+      const response = await axios.get(apiUrl(`/products?seller=${id}&_t=${Date.now()}`), config);
       console.log('Produits récupérés:', response.data.products);
       setProducts(response.data.products || []);
     } catch (error) {
@@ -80,7 +81,7 @@ const UserProfile = () => {
     if (!productId) return;
 
     try {
-      await axios.delete(`/api/products/${productId}`, {
+      await axios.delete(apiUrl(`/products/${productId}`), {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }

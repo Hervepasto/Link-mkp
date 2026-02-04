@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiEye, FiHeart, FiMessageCircle, FiVolume2, FiSearch } from 'react-icons/fi';
 import axios from 'axios';
+import { apiUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import MediaCarousel from './MediaCarousel';
 
@@ -56,7 +57,7 @@ const ProductCard = ({ product, onUpdate }) => {
       try {
         const token = localStorage.getItem('token');
         const response = await axios.post(
-          `/api/products/${product.id}/interested`,
+          apiUrl(`/products/${product.id}/interested`),
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -72,7 +73,7 @@ const ProductCard = ({ product, onUpdate }) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `/api/products/${product.id}/interested`,
+        apiUrl(`/products/${product.id}/interested`),
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

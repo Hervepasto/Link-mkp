@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl, fileUrl } from '../config/urls';
 import { useNotification } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import AutocompleteInput from '../components/AutocompleteInput';
@@ -85,7 +86,7 @@ const ProductForm = () => {
         return;
       }
       
-      const response = await axios.get('/api/auth/me', {
+      const response = await axios.get(apiUrl('/users/me'), {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -107,7 +108,7 @@ const ProductForm = () => {
   const fetchProduct = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`/api/products/${id}`, {
+      const response = await axios.get(apiUrl(`/products/${id}`), {
         headers: { Authorization: `Bearer ${token}` }
       });
       const product = response.data.product;
@@ -203,10 +204,10 @@ const ProductForm = () => {
       };
 
       if (isEdit) {
-        await axios.put(`/api/products/${id}`, formDataToSend, config);
+        await axios.put(apiUrl(`/products/${id}`), formDataToSend, config);
         showSuccess(`${postTypeLabels[postType]} modifié avec succès`);
       } else {
-        await axios.post('/api/products', formDataToSend, config);
+        await axios.post(apiUrl('/products'), formDataToSend, config);
         showSuccess(`${postTypeLabels[postType]} créé avec succès`);
       }
 
@@ -437,13 +438,13 @@ const ProductForm = () => {
                   <div key={media.id} className="relative">
                     {media.media_type === 'video' ? (
                       <video
-                        src={`http://localhost:5000${media.url}`}
+                        src={fileUrl(media.url)}
                         className="w-full h-32 object-cover rounded"
                         controls
                       />
                     ) : (
                       <img
-                        src={`http://localhost:5000${media.url}`}
+                        src={fileUrl(media.url)}
                         alt="Media"
                         className="w-full h-32 object-cover rounded"
                       />

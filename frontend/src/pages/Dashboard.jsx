@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiUrl, fileUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
@@ -27,7 +26,7 @@ const Dashboard = () => {
 
   const fetchSellerProducts = async () => {
     try {
-      const response = await axios.get(`${API_URL}/products`);
+      const response = await axios.get(apiUrl('/products'));
       const myProducts = response.data.products.filter(
         (p) => p.seller_id === user.id
       );
@@ -41,7 +40,7 @@ const Dashboard = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(`${API_URL}/comments/notifications`);
+      const response = await axios.get(apiUrl('/comments/notifications'));
       setNotifications(response.data.notifications.filter((n) => !n.is_read));
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -57,7 +56,7 @@ const Dashboard = () => {
     if (!productId) return;
 
     try {
-      await axios.delete(`${API_URL}/products/${productId}`);
+      await axios.delete(apiUrl(`/products/${productId}`));
       setProducts(products.filter((p) => p.id !== productId));
       setDeleteModal({ isOpen: false, productId: null });
       showSuccess('Produit supprimé avec succès');
@@ -69,7 +68,7 @@ const Dashboard = () => {
 
   const markNotificationRead = async (id) => {
     try {
-      await axios.put(`/api/comments/notifications/${id}/read`);
+      await axios.put(apiUrl(`/comments/notifications/${id}/read`));
       setNotifications(notifications.filter((n) => n.id !== id));
     } catch (error) {
       console.error('Error marking notification read:', error);
@@ -78,7 +77,7 @@ const Dashboard = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.delete('/api/users/me', {
+      await axios.delete(apiUrl('/users/me'), {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       showSuccess('Compte supprimé avec succès');
@@ -157,7 +156,7 @@ const Dashboard = () => {
                   <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                     {product.images && product.images.length > 0 && (
                       <img
-                        src={`http://${window.location.hostname}:5000${product.images[0].url}`}
+                        src={fileUrl(product.images[0].url)}
                         alt={product.name}
                         className="w-full h-48 object-contain"
                         style={{maxHeight: '192px', maxWidth: '100%', margin: 0, objectFit: 'contain', background: 'transparent'}}

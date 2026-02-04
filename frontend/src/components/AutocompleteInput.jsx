@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { apiUrl } from '../config/urls';
 
 const AutocompleteInput = ({ 
   value, 
@@ -47,7 +46,7 @@ const AutocompleteInput = ({
     setLoading(true);
     try {
       const params = new URLSearchParams({ q: query, ...queryParams });
-      const response = await axios.get(`${API_URL}/search/autocomplete/${endpoint}?${params}`);
+      const response = await axios.get(apiUrl(`/search/autocomplete/${endpoint}?${params}`));
       setSuggestions(response.data || []);
       setHighlightedIndex(-1);
     } catch (error) {
