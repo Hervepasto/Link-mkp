@@ -246,7 +246,7 @@ router.post('/', authenticate, requireSeller, upload.array('images', 10), [
     if (files.length > 0 && postType !== 'need') {
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        const mediaUrl = `/uploads/${file.filename}`;
+        const mediaUrl = file.path;
         const mediaType = file.mimetype.startsWith('video/') ? 'video' : 'image';
         
         await pool.query(
@@ -360,7 +360,7 @@ router.put('/:id', authenticate, requireSeller, upload.array('images', 10), asyn
 
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        const mediaUrl = `/uploads/${file.filename}`;
+        const mediaUrl = file.path;
         const mediaType = file.mimetype.startsWith('video/') ? 'video' : 'image';
         
         await pool.query(
