@@ -481,10 +481,12 @@ router.post('/:id/interested', authenticate, async (req, res) => {
     );
 
     // Insérer seulement si l'utilisateur n'a pas déjà cliqué
+    // Sécuriser contre les clics multiples simultanés
     if (existingInterest.rows.length === 0) {
       await pool.query(
         `INSERT INTO product_interests (product_id, user_id)
-         VALUES ($1, $2)`,
+         VALUES ($1, $2)
+         ON CONFLICT (product_id, user_id) DO NOTHING`,
         [id, req.user.id]
       );
     }
