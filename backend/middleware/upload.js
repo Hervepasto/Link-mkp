@@ -9,8 +9,14 @@ const hasCloudinaryKeys =
   !!process.env.CLOUDINARY_API_SECRET;
 
 if (hasCloudinaryUrl) {
-  // The SDK parses the URL and picks up the secret correctly when passed as a string.
-  cloudinary.config(process.env.CLOUDINARY_URL);
+  const rawUrl = process.env.CLOUDINARY_URL.trim();
+  // Parse cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+  const url = new URL(rawUrl.replace('cloudinary://', 'https://'));
+  cloudinary.config({
+    cloud_name: url.hostname,
+    api_key: decodeURIComponent(url.username),
+    api_secret: decodeURIComponent(url.password),
+  });
 } else {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
