@@ -39,13 +39,9 @@ console.log('Cloudinary configured', {
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
-    const isVideo = file.mimetype?.startsWith('video/');
     return {
       folder: 'link/products',
       resource_type: 'auto',
-      allowed_formats: isVideo
-        ? ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'm4v']
-        : ['jpeg', 'jpg', 'png', 'gif', 'webp', 'avif'],
     };
   },
 });
