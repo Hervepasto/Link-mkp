@@ -8,7 +8,14 @@ const hasCloudinaryKeys =
   !!process.env.CLOUDINARY_API_KEY &&
   !!process.env.CLOUDINARY_API_SECRET;
 
-if (hasCloudinaryUrl) {
+// Prefer explicit keys when available (less error-prone than a copied URL)
+if (hasCloudinaryKeys) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+} else if (hasCloudinaryUrl) {
   const rawUrl = process.env.CLOUDINARY_URL.trim();
   // Parse cloudinary://API_KEY:API_SECRET@CLOUD_NAME
   const url = new URL(rawUrl.replace('cloudinary://', 'https://'));
@@ -18,16 +25,14 @@ if (hasCloudinaryUrl) {
     api_secret: decodeURIComponent(url.password),
   });
 } else {
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
-}
-
-if (!hasCloudinaryUrl && !hasCloudinaryKeys) {
   throw new Error('Cloudinary config missing. Set CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME/CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET.');
 }
+
+const cfg = cloudinary.config();
+console.log('Cloudinary configured', {
+  cloud_name: cfg.cloud_name,
+  api_key_suffix: cfg.api_key ? cfg.api_key.slice(-4) : null,
+});
 
 const storage = new CloudinaryStorage({
   cloudinary,
