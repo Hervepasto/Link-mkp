@@ -156,12 +156,16 @@ const Dashboard = () => {
                 {products.map((product) => (
                   <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                     {product.images && product.images.length > 0 && (
-                      <img
-                        src={fileUrl(product.images[0].url)}
-                        alt={product.name}
-                        className="w-full h-48 object-contain"
-                        style={{maxHeight: '192px', maxWidth: '100%', margin: 0, objectFit: 'contain', background: 'transparent'}}
-                      />
+                      <div className="relative w-full h-48 bg-gray-100">
+                        <img
+                          src={fileUrl(product.images[0].url)}
+                          alt={product.name}
+                          className="w-full h-48 object-contain"
+                          style={{maxHeight: '192px', maxWidth: '100%', margin: 0, objectFit: 'contain', background: 'transparent'}}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
                     )}
                     <div className="p-4">
                       <h3 className="font-semibold text-lg mb-2">{product.name}</h3>

@@ -3,10 +3,12 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import axios from 'axios';
 import { apiUrl, fileUrl } from '../config/urls';
 
-const MediaCarousel = ({ media = [], className = '', onImageClick, productId, onViewRegistered }) => {
+const MediaCarousel = ({ media = [], className = '', onImageClick, productId, onViewRegistered, eager = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [hasRegisteredView, setHasRegisteredView] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState('');
   const intervalRef = useRef(null);
 
   // Enregistrer une vue quand l'utilisateur navigue dans le carrousel
@@ -75,6 +77,14 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
   }
 
   const currentMedia = media[currentIndex];
+  const currentUrl = currentMedia ? fileUrl(currentMedia.url) : '';
+
+  useEffect(() => {
+    if (currentMedia && currentMedia.media_type !== 'video') {
+      setImageLoaded(false);
+      setCurrentSrc(currentUrl);
+    }
+  }, [currentMedia, currentUrl]);
 
   const handleMediaClick = (e) => {
     // Ne pas naviguer si on clique sur les contrôles vidéo
@@ -101,12 +111,20 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
             playsInline
           />
         ) : (
-          <img
-            src={fileUrl(currentMedia.url)}
-            alt={`Media ${currentIndex + 1}`}
-            className="max-w-full max-h-full object-contain"
-            style={{ display: 'block' }}
-          />
+          <>
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+            )}
+            <img
+              src={currentSrc}
+              alt={`Media ${currentIndex + 1}`}
+              className={`max-w-full max-h-full object-contain transition-opacity duration-200 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              style={{ display: 'block' }}
+              loading={eager ? 'eager' : 'lazy'}
+              decoding="async"
+              onLoad={() => setImageLoaded(true)}
+            />
+          </>
         )}
       </div>
 

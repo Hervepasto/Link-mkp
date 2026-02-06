@@ -406,6 +406,7 @@ const ProductDetail = () => {
                 <MediaCarousel 
                   media={product.images} 
                   className="h-96"
+                  eager
                   productId={product.id}
                   onViewRegistered={(newViewsCount) => setProduct(prev => ({ ...prev, views_count: newViewsCount }))}
                 />
