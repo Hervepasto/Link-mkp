@@ -77,7 +77,7 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
   }
 
   const currentMedia = media[currentIndex];
-  const currentUrl = currentMedia ? fileUrl(currentMedia.url) : '';
+  const currentUrl = currentMedia ? fileUrl(currentMedia.url, { width: 900 }) : '';
 
   useEffect(() => {
     if (currentMedia && currentMedia.media_type !== 'video') {

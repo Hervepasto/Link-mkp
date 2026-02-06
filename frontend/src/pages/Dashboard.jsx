@@ -158,7 +158,7 @@ const Dashboard = () => {
                     {product.images && product.images.length > 0 && (
                       <div className="relative w-full h-48 bg-gray-100">
                         <img
-                          src={fileUrl(product.images[0].url)}
+                          src={fileUrl(product.images[0].url, { width: 600 })}
                           alt={product.name}
                           className="w-full h-48 object-contain"
                           style={{maxHeight: '192px', maxWidth: '100%', margin: 0, objectFit: 'contain', background: 'transparent'}}
