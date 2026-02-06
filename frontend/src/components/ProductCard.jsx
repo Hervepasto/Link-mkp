@@ -144,17 +144,16 @@ const ProductCard = ({ product, onUpdate }) => {
               👤 {product.seller_name}
             </Link>
             {(product.city || product.neighborhood) && (
-              <div className="text-[10px] text-gray-500">
-                📍 {product.city}{product.neighborhood ? `, ${product.neighborhood}` : ''}
+              <div className="text-[10px] text-gray-500 text-right">
+                <div>📍 {product.city}{product.neighborhood ? `, ${product.neighborhood}` : ''}</div>
+                {product.created_at && (
+                  <div className="text-[10px] text-gray-500">
+                    {timeAgo(product.created_at)}
+                  </div>
+                )}
               </div>
             )}
           </div>
-
-          {product.created_at && (
-            <div className="text-[10px] text-gray-500 mb-1">
-              {timeAgo(product.created_at)}
-            </div>
-          )}
           
           {/* Stats */}
           <div className="flex items-center text-[10px] mb-1 text-gray-600 space-x-2">
@@ -215,18 +214,19 @@ const ProductCard = ({ product, onUpdate }) => {
             </h3>
           </Link>
           {(product.city || product.neighborhood) && (
-            <div className="flex items-center text-[10px] text-gray-500 ml-1">
-              <span className="mr-0.5">📍</span>
-              <span>{product.city}{product.neighborhood ? `, ${product.neighborhood}` : ''}</span>
+            <div className="text-[10px] text-gray-500 ml-1 text-right">
+              <div>
+                <span className="mr-0.5">📍</span>
+                <span>{product.city}{product.neighborhood ? `, ${product.neighborhood}` : ''}</span>
+              </div>
+              {product.created_at && (
+                <div className="text-[10px] text-gray-500">
+                  {timeAgo(product.created_at)}
+                </div>
+              )}
             </div>
           )}
         </div>
-
-        {product.created_at && (
-          <div className="text-[10px] text-gray-500 mb-1">
-            {timeAgo(product.created_at)}
-          </div>
-        )}
         
         {/* Prix (uniquement pour les produits) */}
         {!isAnnouncement && product.price && (
