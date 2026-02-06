@@ -14,7 +14,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50 w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 w-full">
-        <div className="flex flex-nowrap justify-between items-center h-16 min-w-0 gap-0.5 w-full overflow-x-hidden overflow-y-hidden whitespace-nowrap px-0" style={{maxWidth:'100vw'}}>
+        <div className="flex flex-nowrap justify-between items-center h-16 min-w-0 gap-2 w-full overflow-x-hidden overflow-y-hidden whitespace-nowrap px-0" style={{maxWidth:'100vw'}}>
           <Link to="/" className="flex flex-col items-center justify-center">
             <div className="flex flex-col items-center">
               <FiLink 
@@ -31,10 +31,10 @@ const Navbar = () => {
             </div>
           </Link>
 
-          <div className={`flex items-center min-w-0 ${!isAuthenticated ? 'space-x-0.5 sm:space-x-0.5' : 'space-x-0.5'} shrink-0`} style={{maxWidth:'100vw'}}>
+          <div className={`flex items-center min-w-0 ${!isAuthenticated ? 'space-x-2 sm:space-x-3' : 'space-x-0.5'} shrink-0`} style={{maxWidth:'100vw'}}>
             <Link
               to="/search"
-              className="p-1 text-gray-600 hover:text-primary transition"
+              className="p-2 text-gray-600 hover:text-primary transition"
               title="Rechercher"
             >
               <FiSearch className="w-5 h-5" />
@@ -46,14 +46,14 @@ const Navbar = () => {
               <>
                 <Link
                   to="/dashboard"
-                  className="p-1 text-gray-600 hover:text-primary transition"
+                  className="p-2 text-gray-600 hover:text-primary transition"
                   title="Mon profil"
                 >
                   <FiUser className="w-5 h-5" />
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="p-1 text-gray-600 hover:text-primary transition"
+                  className="p-2 text-gray-600 hover:text-primary transition"
                   title="Déconnexion"
                 >
                   <FiLogOut className="w-5 h-5" />
@@ -63,13 +63,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="px-1 sm:px-2 py-1 text-gray-700 hover:text-primary transition text-sm"
+                  className="px-2 sm:px-3 py-1 text-gray-700 hover:text-primary transition text-sm"
                 >
                   Connexion
                 </Link>
                 <Link
                   to="/register"
-                  className="px-1 sm:px-2 py-1 bg-primary text-white rounded-lg hover:bg-primary-600 transition text-sm"
+                  className="px-2 sm:px-3 py-1 bg-primary text-white rounded-lg hover:bg-primary-600 transition text-sm"
                 >
                   Inscription
                 </Link>
@@ -83,3 +83,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
