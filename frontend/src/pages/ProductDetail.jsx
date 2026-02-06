@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { apiUrl } from '../config/urls';
+import { apiUrl, PUBLIC_URL } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
@@ -212,7 +212,8 @@ const ProductDetail = () => {
   };
 
   const getShareUrl = () => {
-    return `${window.location.origin}/product/${id}`;
+    const base = PUBLIC_URL.replace(/\/$/, '');
+    return `${base}/#/product/${id}`;
   };
 
   const getShareText = () => {
