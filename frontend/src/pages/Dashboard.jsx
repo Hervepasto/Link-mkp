@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
 import { FiPlus, FiEdit, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
+import { timeAgo } from '../utils/time';
 
 const Dashboard = () => {
   const { user, fetchUser, logout } = useAuth();
@@ -164,6 +165,11 @@ const Dashboard = () => {
                     )}
                     <div className="p-4">
                       <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
+                      {product.created_at && (
+                        <div className="text-xs text-gray-500 mb-2">
+                          {timeAgo(product.created_at)}
+                        </div>
+                      )}
                       <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                         {product.description || 'Aucune description'}
                       </p>

@@ -8,6 +8,7 @@ import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
 import { FiEye, FiHeart, FiMessageCircle, FiArrowLeft, FiShare2, FiRepeat, FiEdit, FiSearch, FiVolume2 } from 'react-icons/fi';
 import MediaCarousel from '../components/MediaCarousel';
+import { timeAgo } from '../utils/time';
 
 // Icônes des catégories pour les besoins
 const CATEGORY_ICONS = {
@@ -397,6 +398,12 @@ const ProductDetail = () => {
 
         <div className="p-6 relative">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
+
+          {product.created_at && (
+            <div className="text-sm text-gray-500 mb-3">
+              {timeAgo(product.created_at)}
+            </div>
+          )}
           
           {/* Prix (uniquement pour les produits) */}
           {!isNeed && !isAnnouncement && product.price && (

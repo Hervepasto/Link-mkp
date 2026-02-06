@@ -5,6 +5,7 @@ import axios from 'axios';
 import { apiUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import MediaCarousel from './MediaCarousel';
+import { timeAgo } from '../utils/time';
 
 // Icônes des catégories pour les besoins
 const CATEGORY_ICONS = {
@@ -214,6 +215,12 @@ const ProductCard = ({ product, onUpdate }) => {
             </div>
           )}
         </div>
+
+        {product.created_at && (
+          <div className="text-[10px] text-gray-500 mb-1">
+            {timeAgo(product.created_at)}
+          </div>
+        )}
         
         {/* Prix (uniquement pour les produits) */}
         {!isAnnouncement && product.price && (
