@@ -59,6 +59,7 @@ const ProductDetail = () => {
   const [interested, setInterested] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState('');
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [shareMenuPos, setShareMenuPos] = useState({ top: 0, left: 0 });
   const [repostModal, setRepostModal] = useState({ isOpen: false });
   const shareMenuRef = useRef(null);
   const shareButtonRef = useRef(null);
@@ -82,11 +83,28 @@ const ProductDetail = () => {
 
     if (showShareMenu) {
       document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside, { passive: true });
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
+  }, [showShareMenu]);
+
+  useEffect(() => {
+    if (!showShareMenu || !shareButtonRef.current) return;
+    const rect = shareButtonRef.current.getBoundingClientRect();
+    const menuWidth = 192; // w-48
+    const padding = 8;
+    const left = Math.min(
+      Math.max(rect.left, padding),
+      window.innerWidth - menuWidth - padding
+    );
+    setShareMenuPos({
+      top: rect.bottom + 8,
+      left,
+    });
   }, [showShareMenu]);
 
   const fetchProduct = async () => {
@@ -510,11 +528,12 @@ const ProductDetail = () => {
               ref={shareMenuRef}
               className="fixed bg-white rounded-lg shadow-xl border border-gray-200 z-[9999] w-48"
               style={{
-                top: shareButtonRef.current.getBoundingClientRect().bottom + 8,
-                right: window.innerWidth - shareButtonRef.current.getBoundingClientRect().right,
+                top: shareMenuPos.top,
+                left: shareMenuPos.left,
               }}
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
             >
               <div className="py-2">
                 <button
