@@ -3,6 +3,7 @@ import { authenticate, requireSeller } from '../middleware/auth.js';
 import { upload } from '../middleware/upload.js';
 import { body, validationResult } from 'express-validator';
 import pool from '../config/database.js';
+import cloudinary from '../config/cloudinary.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -10,6 +11,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
+
+const uploadToCloudinary = (file) => new Promise((resolve, reject) => {
+  const stream = cloudinary.uploader.upload_stream(
+    { folder: 'link/products', resource_type: 'auto' },
+    (error, result) => {
+      if (error) return reject(error);
+      resolve(result);
+    }
+  );
+  stream.end(file.buffer);
+});
 
 // Obtenir tous les produits (fil d'actualité)
 router.get('/', async (req, res) => {
@@ -246,9 +258,10 @@ router.post('/', authenticate, requireSeller, upload.array('images', 10), [
     if (files.length > 0 && postType !== 'need') {
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        const mediaUrl = file.path;
+        const result = await uploadToCloudinary(file);
+        const mediaUrl = result.secure_url || result.url;
         const mediaType = file.mimetype.startsWith('video/') ? 'video' : 'image';
-        
+
         await pool.query(
           `INSERT INTO product_images (product_id, image_url, image_order, media_type)
            VALUES ($1, $2, $3, $4)`,
@@ -360,9 +373,10 @@ router.put('/:id', authenticate, requireSeller, upload.array('images', 10), asyn
 
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        const mediaUrl = file.path;
+        const result = await uploadToCloudinary(file);
+        const mediaUrl = result.secure_url || result.url;
         const mediaType = file.mimetype.startsWith('video/') ? 'video' : 'image';
-        
+
         await pool.query(
           `INSERT INTO product_images (product_id, image_url, image_order, media_type)
            VALUES ($1, $2, $3, $4)`,
