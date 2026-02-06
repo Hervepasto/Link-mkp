@@ -290,7 +290,7 @@ router.post('/', authenticate, requireSeller, upload.array('images', 10), [
 router.put('/:id', authenticate, requireSeller, upload.array('images', 10), async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, country, city, neighborhood, whatsappNumber, price, isUrgent, category } = req.body;
+    const { name, description, country, city, neighborhood, whatsappNumber, price, isUrgent, category, removedMedia } = req.body;
     const files = req.files || [];
 
     // Vérifier que le produit appartient au vendeur
@@ -360,6 +360,22 @@ router.put('/:id', authenticate, requireSeller, upload.array('images', 10), asyn
         `UPDATE products SET ${updateFields.join(', ')} WHERE id = $${paramIndex}`,
         updateValues
       );
+    }
+
+    // Supprimer les médias existants si demandés
+    if (removedMedia) {
+      let ids = [];
+      try {
+        ids = JSON.parse(removedMedia);
+      } catch (e) {
+        ids = [];
+      }
+      if (Array.isArray(ids) && ids.length > 0) {
+        await pool.query(
+          `DELETE FROM product_images WHERE product_id = $1 AND id = ANY($2::uuid[])`,
+          [id, ids]
+        );
+      }
     }
 
     // Ajouter les nouvelles images et vidéos (sauf pour les besoins)

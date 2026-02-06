@@ -65,6 +65,7 @@ const ProductForm = () => {
   });
   const [mediaFiles, setMediaFiles] = useState([]);
   const [existingMedia, setExistingMedia] = useState([]);
+  const [removedMediaIds, setRemovedMediaIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
@@ -155,6 +156,11 @@ const ProductForm = () => {
     setMediaFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const removeExistingMedia = (mediaId) => {
+    setExistingMedia(prev => prev.filter((m) => m.id !== mediaId));
+    setRemovedMediaIds(prev => (prev.includes(mediaId) ? prev : [...prev, mediaId]));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -180,6 +186,10 @@ const ProductForm = () => {
       if (postType === 'need') {
         formDataToSend.append('isUrgent', formData.isUrgent);
         formDataToSend.append('category', formData.category);
+      }
+
+      if (removedMediaIds.length > 0) {
+        formDataToSend.append('removedMedia', JSON.stringify(removedMediaIds));
       }
 
       // Ajouter les médias (sauf pour les besoins)
@@ -449,6 +459,14 @@ const ProductForm = () => {
                         className="w-full h-32 object-cover rounded"
                       />
                     )}
+                    <button
+                      type="button"
+                      onClick={() => removeExistingMedia(media.id)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                      title="Supprimer"
+                    >
+                      ×
+                    </button>
                   </div>
                 ))}
               </div>
