@@ -149,6 +149,12 @@ const ProductCard = ({ product, onUpdate }) => {
               </div>
             )}
           </div>
+
+          {product.created_at && (
+            <div className="text-[10px] text-gray-500 mb-1">
+              {timeAgo(product.created_at)}
+            </div>
+          )}
           
           {/* Stats */}
           <div className="flex items-center text-[10px] mb-1 text-gray-600 space-x-2">
