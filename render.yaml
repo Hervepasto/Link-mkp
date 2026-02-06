@@ -19,3 +19,7 @@ services:
     plan: free
     autoDeploy: true
     rootDir: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
