@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { apiUrl, fileUrl } from '../config/urls';
+import { apiUrl, fileUrl, rawFileUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
@@ -164,6 +164,12 @@ const Dashboard = () => {
                           style={{maxHeight: '192px', maxWidth: '100%', margin: 0, objectFit: 'contain', background: 'transparent'}}
                           loading="lazy"
                           decoding="async"
+                          onError={(e) => {
+                            const fallback = rawFileUrl(product.images[0].url);
+                            if (fallback && e.currentTarget.src !== fallback) {
+                              e.currentTarget.src = fallback;
+                            }
+                          }}
                         />
                       </div>
                     )}

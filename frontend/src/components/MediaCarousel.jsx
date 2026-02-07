@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import axios from 'axios';
-import { apiUrl, fileUrl } from '../config/urls';
+import { apiUrl, fileUrl, rawFileUrl } from '../config/urls';
 
 const MediaCarousel = ({ media = [], className = '', onImageClick, productId, onViewRegistered, eager = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -9,6 +9,7 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
   const [hasRegisteredView, setHasRegisteredView] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [currentSrc, setCurrentSrc] = useState('');
+  const [hasTriedRaw, setHasTriedRaw] = useState(false);
   const intervalRef = useRef(null);
 
   // Enregistrer une vue quand l'utilisateur navigue dans le carrousel
@@ -77,14 +78,16 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
   }
 
   const currentMedia = media[currentIndex];
-  const currentUrl = currentMedia ? fileUrl(currentMedia.url, { width: 900 }) : '';
+  const optimizedUrl = currentMedia ? fileUrl(currentMedia.url, { width: 900 }) : '';
+  const rawUrl = currentMedia ? rawFileUrl(currentMedia.url) : '';
 
   useEffect(() => {
     if (currentMedia && currentMedia.media_type !== 'video') {
       setImageLoaded(false);
-      setCurrentSrc(currentUrl);
+      setHasTriedRaw(false);
+      setCurrentSrc(optimizedUrl || rawUrl);
     }
-  }, [currentMedia, currentUrl]);
+  }, [currentMedia, optimizedUrl, rawUrl]);
 
   const handleMediaClick = (e) => {
     // Ne pas naviguer si on clique sur les contrôles vidéo
@@ -123,6 +126,15 @@ const MediaCarousel = ({ media = [], className = '', onImageClick, productId, on
               loading={eager ? 'eager' : 'lazy'}
               decoding="async"
               onLoad={() => setImageLoaded(true)}
+              onError={() => {
+                if (!hasTriedRaw && rawUrl && currentSrc !== rawUrl) {
+                  setHasTriedRaw(true);
+                  setImageLoaded(false);
+                  setCurrentSrc(rawUrl);
+                  return;
+                }
+                setImageLoaded(true);
+              }}
             />
           </>
         )}
