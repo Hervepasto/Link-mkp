@@ -38,7 +38,13 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await register(formData);
+      const payload = { ...formData };
+      if (!payload.email || !payload.email.trim()) {
+        delete payload.email;
+      } else {
+        payload.email = payload.email.trim();
+      }
+      await register(payload);
       // Rafraîchir la page pour mettre à jour tous les composants
       window.location.href = '/';
     } catch (err) {
@@ -251,3 +257,6 @@ const Register = () => {
 };
 
 export default Register;
+
+
+
