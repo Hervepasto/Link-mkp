@@ -8,6 +8,7 @@ import userRoutes from './routes/users.js';
 import productRoutes from './routes/products.js';
 import commentRoutes from './routes/comments.js';
 import searchRoutes from './routes/search.js';
+import adminRoutes from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -26,12 +27,16 @@ app.use(express.urlencoded({ extended: true }));
 // Servir les fichiers statiques (images uploadées)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Servir le favicon si présent
+app.use('/favicon.ico', express.static(path.join(__dirname, 'public', 'favicon.ico')));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Route de santé
 app.get('/api/health', (req, res) => {

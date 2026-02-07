@@ -12,6 +12,7 @@ import ProductForm from './pages/ProductForm';
 import ProductDetail from './pages/ProductDetail';
 import Search from './pages/Search';
 import UserProfile from './pages/UserProfile';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -48,6 +49,14 @@ function App() {
             element={
               <PrivateRoute requireSeller>
                 <ProductForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminDashboard />
               </PrivateRoute>
             }
           />
