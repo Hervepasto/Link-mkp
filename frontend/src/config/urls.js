@@ -30,10 +30,15 @@ const optimizeCloudinaryUrl = (url, opts = {}) => {
   return url.replace('/upload/', `/upload/f_${format},q_${quality},w_${width}/`);
 };
 
+const rawFileUrl = (path = '') => {
+  if (!path) return '';
+  return joinUrl(FILES_URL, path);
+};
+
 const fileUrl = (path = '', opts = {}) => {
   if (!path) return '';
-  const full = joinUrl(FILES_URL, path);
+  const full = rawFileUrl(path);
   return optimizeCloudinaryUrl(full, opts);
 };
 
-export { API_URL, FILES_URL, PUBLIC_URL, apiUrl, fileUrl };
+export { API_URL, FILES_URL, PUBLIC_URL, apiUrl, fileUrl, rawFileUrl };
