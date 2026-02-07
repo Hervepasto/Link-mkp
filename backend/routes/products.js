@@ -556,14 +556,15 @@ router.post('/:id/interested', authenticate, async (req, res) => {
     }
 
     let whatsappMessage = '';
+    const shareUrl = `${req.protocol}://${req.get('host')}/share/product/${id}`;
     if (postType === 'need') {
-      whatsappMessage = `Bonjour, je peux vous aider pour votre besoin : « ${product.name} » publié sur Link`;
+      whatsappMessage = `Bonjour, je peux vous aider pour votre besoin : "${product.name}" publie sur Link`;
     } else if (postType === 'announcement') {
-      whatsappMessage = `Bonjour, je suis intéressé par votre annonce « ${product.name} » et aimerais en savoir davantage.`;
+      whatsappMessage = `Bonjour, je suis interesse par votre annonce "${product.name}" et aimerais en savoir davantage.`;
     } else {
-      whatsappMessage = `Bonjour, je suis intéressé par votre produit "${product.name}" publié sur Link.`;
+      whatsappMessage = `Bonjour, je suis interesse par votre produit "${product.name}" publie sur Link.`;
     }
-    const whatsappUrl = `https://wa.me/${product.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappUrl = `https://wa.me/${product.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(`${whatsappMessage}\nLien du produit: ${shareUrl}`)}`;
 
     // Obtenir les compteurs mis à jour
     const countsResult = await pool.query(
@@ -723,3 +724,4 @@ router.post('/:id/repost', authenticate, async (req, res) => {
 });
 
 export default router;
+

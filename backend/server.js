@@ -9,6 +9,7 @@ import productRoutes from './routes/products.js';
 import commentRoutes from './routes/comments.js';
 import searchRoutes from './routes/search.js';
 import adminRoutes from './routes/admin.js';
+import shareRoutes from './routes/share.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import pool from './config/database.js';
 
@@ -46,6 +47,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/share', shareRoutes);
 
 // Route de santé
 app.get('/api/health', (req, res) => {
