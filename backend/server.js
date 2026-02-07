@@ -10,6 +10,7 @@ import commentRoutes from './routes/comments.js';
 import searchRoutes from './routes/search.js';
 import adminRoutes from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import pool from './config/database.js';
 
 dotenv.config();
 
@@ -18,6 +19,14 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const ensureSchema = async () => {
+  try {
+    await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS products_sold TEXT');
+  } catch (error) {
+    console.error('Schema check error:', error);
+  }
+};
 
 // Middleware
 app.use(cors());
@@ -50,3 +59,6 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+ensureSchema();
+
