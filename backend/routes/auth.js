@@ -14,7 +14,7 @@ router.post('/register', [
   body('firstName').trim().notEmpty(),
   body('lastName').trim().notEmpty(),
   body('userType').isIn(['seller', 'buyer']),
-  body('email').optional().isEmail().normalizeEmail(),
+  body('email').optional({ checkFalsy: true, nullable: true }).isEmail().normalizeEmail(),
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
