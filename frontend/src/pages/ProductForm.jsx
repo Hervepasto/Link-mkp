@@ -66,8 +66,6 @@ const ProductForm = () => {
   const [mediaFiles, setMediaFiles] = useState([]);
   const [existingMedia, setExistingMedia] = useState([]);
   const [removedMediaIds, setRemovedMediaIds] = useState([]);
-  const [shareModalOpen, setShareModalOpen] = useState(false);
-  const [shareLink, setShareLink] = useState('');
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
@@ -224,11 +222,10 @@ const ProductForm = () => {
         showSuccess(`${postTypeLabels[postType]} créé avec succès`);
         const createdId = response?.data?.product?.id;
         if (createdId) {
-          setShareLink(`${window.location.origin}/#/product/${createdId}`);
-          setShareModalOpen(true);
-        } else {
-          navigate('/dashboard');
+          const link = `${window.location.origin}/#/product/${createdId}`;
+          localStorage.setItem('pendingShareLink', link);
         }
+        navigate('/');
       }
     } catch (err) {
       const errorMessage = err.response?.data?.error || 'Erreur lors de l\'enregistrement';
@@ -555,47 +552,6 @@ const ProductForm = () => {
         </div>
       </form>
 
-      {shareModalOpen && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={() => setShareModalOpen(false)}
-          />
-          <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <div className="flex items-start justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Partagez votre publication</h3>
-              <button
-                onClick={() => setShareModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
-                ×
-              </button>
-            </div>
-            <p className="text-gray-700 mb-6">
-              Partagez votre post avec vos amis, famille et contacts sur WhatsApp. 
-              Plus vous partagez, plus votre post est visible.
-            </p>
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setShareModalOpen(false)}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
-              >
-                Plus tard
-              </button>
-              <button
-                onClick={() => {
-                  const text = `Bonjour, je partage mon post sur Link : ${shareLink}`;
-                  const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-                  window.open(waUrl, '_blank');
-                }}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition animate-pulse"
-              >
-                Partager sur WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

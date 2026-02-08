@@ -9,6 +9,8 @@ import { useAuth } from '../context/AuthContext';
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareLink, setShareLink] = useState('');
   const { user } = useAuth();
   const location = useLocation();
 
@@ -37,6 +39,15 @@ const Home = () => {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    const pendingLink = localStorage.getItem('pendingShareLink');
+    if (pendingLink) {
+      setShareLink(pendingLink);
+      setShareModalOpen(true);
+      localStorage.removeItem('pendingShareLink');
+    }
+  }, []);
 
   // Rafraîchir quand on revient sur la page
   useEffect(() => {
@@ -114,6 +125,48 @@ const Home = () => {
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
+        </div>
+      )}
+
+      {shareModalOpen && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShareModalOpen(false)}
+          />
+          <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Partagez votre publication</h3>
+              <button
+                onClick={() => setShareModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition"
+              >
+                ??
+              </button>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Partagez votre post avec vos amis, famille et contacts sur WhatsApp.
+              Plus vous partagez, plus votre post est visible.
+            </p>
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setShareModalOpen(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+              >
+                Plus tard
+              </button>
+              <button
+                onClick={() => {
+                  const text = `Bonjour, je partage mon post sur Link : ${shareLink}`;
+                  const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                  window.open(waUrl, '_blank');
+                }}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition animate-pulse"
+              >
+                Partager sur WhatsApp
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
