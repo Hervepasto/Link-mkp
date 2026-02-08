@@ -94,13 +94,14 @@ const Dashboard = () => {
       await axios.delete(apiUrl('/users/me'), {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
-      showSuccess('Compte supprimé avec succès');
+      showSuccess('Compte supprim?? avec succ??s');
       logout();
       navigate('/');
     } catch (error) {
       showError('Erreur lors de la suppression du compte');
       setDeleteAccountModal(false);
     }
+  };
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
