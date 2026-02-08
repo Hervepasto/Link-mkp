@@ -159,7 +159,7 @@ const Home = () => {
               </button>
               <button
                 onClick={() => {
-                  const text = `Bonjour, je partage mon post sur Link : ${shareLink}`;
+                  const text = `Decouvrez cette publication sur Link : ${shareLink}`;
                   const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
                   window.open(waUrl, '_blank');
                 }}

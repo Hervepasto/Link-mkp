@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { apiUrl } from '../config/urls';
+import { API_URL, apiUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import Modal from '../components/Modal';
@@ -212,18 +212,19 @@ const ProductDetail = () => {
   };
 
   const getShareUrl = () => {
-    return `${window.location.origin}/#/product/${id}`;
+    const base = API_URL ? API_URL.replace(/\/api\/?$/, '') : window.location.origin;
+    return `${base}/share/product/${id}`;
   };
 
   const getShareText = () => {
-    if (!product) return 'Découvrez ce produit sur Link';
+    if (!product) return 'Decouvrez une publication sur Link.';
     if (product.post_type === 'need') {
-      return `Bonjour, je peux vous aider pour votre besoin : « ${product.name} » publié sur Link`;
+      return `Decouvrez le besoin "${product.name}" poste sur Link. Peut-etre que vous pouvez aider !`;
     }
     if (product.post_type === 'announcement') {
-      return `Bonjour, je suis intéressé par votre annonce « ${product.name} » et aimerais en savoir davantage.`;
+      return `Decouvrez l'annonce "${product.name}" postee sur Link.`;
     }
-    return `Découvrez "${product.name}" sur Link - ${product.city || ''}`;
+    return `Decouvrez le produit "${product.name}" poste sur Link.`;
   };
 
   const handleRepost = async (e) => {
