@@ -162,6 +162,7 @@ const Home = () => {
                   const text = `Decouvrez cette publication sur Link : ${shareLink}`;
                   const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
                   window.open(waUrl, '_blank');
+                  setShareModalOpen(false);
                 }}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition animate-pulse"
               >
