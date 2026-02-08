@@ -141,7 +141,7 @@ const Home = () => {
                 onClick={() => setShareModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition"
               >
-                ??
+                x
               </button>
             </div>
             <p className="text-gray-700 mb-6">

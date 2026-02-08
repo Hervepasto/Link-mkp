@@ -225,7 +225,8 @@ const ProductForm = () => {
           const link = `${window.location.origin}/#/product/${createdId}`;
           localStorage.setItem('pendingShareLink', link);
         }
-        navigate('/');
+        // Forcer le retour Ã  l'accueil pour afficher le modal de partage
+        window.location.href = '/#/';
       }
     } catch (err) {
       const errorMessage = err.response?.data?.error || 'Erreur lors de l\'enregistrement';
