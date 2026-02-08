@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { apiUrl } from '../config/urls';
 import { useAuth } from '../context/AuthContext';
@@ -11,6 +11,7 @@ import { FiTrash2, FiEdit, FiRefreshCw } from 'react-icons/fi';
 const UserProfile = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const { showSuccess, showError } = useNotification();
   const [user, setUser] = useState(null);
@@ -74,6 +75,11 @@ const UserProfile = () => {
 
   const handleDeleteClick = (productId) => {
     setDeleteModal({ isOpen: true, productId });
+  };
+
+  const handleOpenProduct = (product) => {
+    if (!product?.id) return;
+    navigate(`/product/${product.id}`);
   };
 
   const handleDeleteConfirm = async () => {
@@ -153,8 +159,14 @@ const UserProfile = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {products.map((product) => (
-              <ProductCard product={product} isOwnProfile={isOwnProfile} onDelete={handleDeleteClick} />
-            ))}
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  isOwnProfile={isOwnProfile}
+                  onDelete={handleDeleteClick}
+                  onCardClick={handleOpenProduct}
+                />
+              ))}
           </div>
         )}
       </div>

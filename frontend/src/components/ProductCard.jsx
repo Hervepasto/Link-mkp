@@ -33,7 +33,7 @@ const CATEGORY_COLORS = {
   'other': 'from-gray-400 to-gray-600',
 };
 
-const ProductCard = ({ product, onUpdate, isOwnProfile = false }) => {
+const ProductCard = ({ product, onUpdate, isOwnProfile = false, onCardClick }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [interested, setInterested] = useState(product.is_interested || false);
@@ -98,6 +98,10 @@ const ProductCard = ({ product, onUpdate, isOwnProfile = false }) => {
   };
 
   const handleCardClick = () => {
+    if (onCardClick) {
+      onCardClick(product);
+      return;
+    }
     navigate(`/product/${product.id}`);
   };
 

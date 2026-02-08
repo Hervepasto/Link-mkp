@@ -65,6 +65,10 @@ const Dashboard = () => {
     setDeleteModal({ isOpen: true, productId: id });
   };
 
+  const handleOpenProduct = (id) => {
+    navigate(`/product/${id}`);
+  };
+
   const handleDeleteConfirm = async () => {
     const { productId } = deleteModal;
     if (!productId) return;
@@ -221,7 +225,19 @@ const Dashboard = () => {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                 {products.map((product) => (
-                  <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div
+                    key={product.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleOpenProduct(product.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleOpenProduct(product.id);
+                      }
+                    }}
+                  >
                     {product.images && product.images.length > 0 && (
                       <div className="relative w-full h-48 bg-gray-100">
                         <img
@@ -254,12 +270,16 @@ const Dashboard = () => {
                         <Link
                           to={`/product/edit/${product.id}`}
                           className="flex items-center text-primary hover:text-primary-600"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <FiEdit className="w-4 h-4 mr-1" />
                           Modifier
                         </Link>
                         <button
-                          onClick={() => handleDeleteClick(product.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(product.id);
+                          }}
                           className="flex items-center text-red-600 hover:text-red-700"
                         >
                           <FiTrash2 className="w-4 h-4 mr-1" />
