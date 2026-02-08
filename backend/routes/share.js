@@ -11,6 +11,13 @@ const escapeHtml = (value = '') =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
+
+const buildShareBase = (req) => {
+  const envUrl = process.env.SHARE_BASE_URL || process.env.BACKEND_URL || process.env.API_PUBLIC_URL;
+  if (envUrl) return envUrl.replace(/\/$/, '');
+  return `${req.protocol}://${req.get('host')}`;
+};
+
 const buildPublicUrl = (req) => {
   const envUrl = process.env.PUBLIC_URL || process.env.FRONTEND_URL;
   if (envUrl) return envUrl.replace(/\/$/, '');
@@ -43,7 +50,8 @@ router.get('/product/:id', async (req, res) => {
     const product = result.rows[0];
     const baseUrl = buildPublicUrl(req);
     const appUrl = `${baseUrl}/#/product/${product.id}`;
-    const shareUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const shareBase = buildShareBase(req);
+    const shareUrl = `${shareBase}${req.originalUrl}`;
     const title = product.name || 'Produit sur Link';
     const description = product.description
       ? product.description.slice(0, 160)

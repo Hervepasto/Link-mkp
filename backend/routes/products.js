@@ -556,7 +556,8 @@ router.post('/:id/interested', authenticate, async (req, res) => {
     }
 
     let whatsappMessage = '';
-    const shareUrl = `${req.protocol}://${req.get('host')}/share/product/${id}`;
+    const shareBase = (process.env.SHARE_BASE_URL || process.env.BACKEND_URL || process.env.API_PUBLIC_URL || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+    const shareUrl = `${shareBase}/share/product/${id}`;
     if (postType === 'need') {
       whatsappMessage = `Bonjour, je peux vous aider pour votre besoin : "${product.name}" publie sur Link`;
     } else if (postType === 'announcement') {
@@ -564,7 +565,7 @@ router.post('/:id/interested', authenticate, async (req, res) => {
     } else {
       whatsappMessage = `Bonjour, je suis interesse par votre produit "${product.name}" publie sur Link.`;
     }
-    const whatsappUrl = `https://wa.me/${product.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(`${whatsappMessage}\nLien du produit: ${shareUrl}`)}`;
+    const whatsappUrl = `https://wa.me/${product.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(`${whatsappMessage} ${shareUrl}`)}`;
 
     // Obtenir les compteurs mis à jour
     const countsResult = await pool.query(
