@@ -23,6 +23,15 @@ const uploadToCloudinary = (file) => new Promise((resolve, reject) => {
   stream.end(file.buffer);
 });
 
+const buildShareBase = (req) => {
+  const envUrl = process.env.SHARE_BASE_URL || process.env.BACKEND_URL || process.env.API_PUBLIC_URL;
+  if (envUrl) return envUrl.replace(/\/$/, '');
+  const protoHeader = req.headers['x-forwarded-proto'];
+  const proto = protoHeader ? protoHeader.split(',')[0].trim() : req.protocol;
+  return `${proto}://${req.get('host')}`;
+};
+
+
 // Obtenir tous les produits (fil d'actualité)
 router.get('/', async (req, res) => {
   try {
@@ -556,7 +565,7 @@ router.post('/:id/interested', authenticate, async (req, res) => {
     }
 
     let whatsappMessage = '';
-    const shareBase = (process.env.SHARE_BASE_URL || process.env.BACKEND_URL || process.env.API_PUBLIC_URL || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+    const shareBase = buildShareBase(req);
     const shareUrl = `${shareBase}/share/product/${id}`;
     if (postType === 'need') {
       whatsappMessage = `Bonjour, je peux vous aider pour votre besoin : "${product.name}" publie sur Link`;
@@ -565,7 +574,8 @@ router.post('/:id/interested', authenticate, async (req, res) => {
     } else {
       whatsappMessage = `Bonjour, je suis interesse par votre produit "${product.name}" publie sur Link.`;
     }
-    const whatsappUrl = `https://wa.me/${product.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(`${whatsappMessage} ${shareUrl}`)}`;
+    const whatsappText = `${whatsappMessage}\nLien du produit : ${shareUrl}`;
+    const whatsappUrl = `https://wa.me/${product.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(whatsappText)}`;
 
     // Obtenir les compteurs mis à jour
     const countsResult = await pool.query(

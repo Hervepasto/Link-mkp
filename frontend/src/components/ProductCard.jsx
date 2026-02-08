@@ -33,7 +33,7 @@ const CATEGORY_COLORS = {
   'other': 'from-gray-400 to-gray-600',
 };
 
-const ProductCard = ({ product, onUpdate }) => {
+const ProductCard = ({ product, onUpdate, isOwnProfile = false }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [interested, setInterested] = useState(product.is_interested || false);
@@ -97,13 +97,17 @@ const ProductCard = ({ product, onUpdate }) => {
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
   // Affichage pour les besoins (sans image)
   if (isNeed) {
     const categoryIcon = CATEGORY_ICONS[product.category] || '🔍';
     const categoryColor = CATEGORY_COLORS[product.category] || 'from-gray-400 to-gray-600';
     
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition w-full h-[220px] sm:h-[280px] flex flex-col">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition w-full h-[220px] sm:h-[280px] flex flex-col cursor-pointer" onClick={handleCardClick}>
         {/* En-tête coloré avec icône */}
         <div className={`relative h-28 sm:h-36 bg-gradient-to-br ${categoryColor} flex flex-col items-center justify-center flex-shrink-0`}>
           {/* Badge BESOIN */}
@@ -170,6 +174,7 @@ const ProductCard = ({ product, onUpdate }) => {
           {/* Spacer */}
           <div className="flex-grow"></div>
 
+          {!isOwnProfile && (
           <button
             onClick={handleInterested}
             className={`w-full px-2 py-1.5 rounded-lg font-semibold text-[10px] transition ${
@@ -180,6 +185,7 @@ const ProductCard = ({ product, onUpdate }) => {
           >
             {interested ? 'Je peux aider ✓' : 'Je peux aider'}
           </button>
+          )}
         </div>
       </div>
     );
@@ -187,7 +193,7 @@ const ProductCard = ({ product, onUpdate }) => {
 
   // Affichage pour les annonces et produits (avec images)
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition h-[280px] flex flex-col">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition h-[280px] flex flex-col cursor-pointer" onClick={handleCardClick}>
       <div className="relative h-36 bg-gray-200 overflow-hidden flex-shrink-0">
         {/* Badge type de post */}
         {isAnnouncement && (
@@ -260,6 +266,7 @@ const ProductCard = ({ product, onUpdate }) => {
         {/* Spacer */}
         <div className="flex-grow"></div>
 
+        {!isOwnProfile && (
         <button
           onClick={handleInterested}
           className={`w-full px-2 py-1.5 rounded-lg font-semibold text-[10px] transition ${
@@ -270,6 +277,7 @@ const ProductCard = ({ product, onUpdate }) => {
         >
           {interested ? 'Intéressé ✓' : 'Je suis intéressé'}
         </button>
+        )}
       </div>
     </div>
   );
