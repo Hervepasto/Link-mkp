@@ -41,11 +41,13 @@ const Home = () => {
   }, [fetchProducts]);
 
   useEffect(() => {
-    const pendingLink = localStorage.getItem('pendingShareLink');
-    if (pendingLink) {
-      setShareLink(pendingLink);
+    const pendingId = localStorage.getItem('pendingShareId');
+    if (pendingId) {
+      const base = API_URL ? API_URL.replace(/\/api\/?$/, '') : window.location.origin;
+      const link = `${base}/share/product/${pendingId}`;
+      setShareLink(link);
       setShareModalOpen(true);
-      localStorage.removeItem('pendingShareLink');
+      localStorage.removeItem('pendingShareId');
     }
   }, []);
 

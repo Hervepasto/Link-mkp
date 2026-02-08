@@ -222,8 +222,7 @@ const ProductForm = () => {
         showSuccess(`${postTypeLabels[postType]} créé avec succès`);
         const createdId = response?.data?.product?.id;
         if (createdId) {
-          const link = `${window.location.origin}/#/product/${createdId}`;
-          localStorage.setItem('pendingShareLink', link);
+          localStorage.setItem('pendingShareId', createdId);
         }
         // Forcer le retour Ã  l'accueil pour afficher le modal de partage
         window.location.href = '/#/';
