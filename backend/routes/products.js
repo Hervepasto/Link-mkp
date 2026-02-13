@@ -6,6 +6,7 @@ import pool from '../config/database.js';
 import cloudinary from '../config/cloudinary.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { broadcastPostCreated } from '../services/whatsappBroadcast.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -277,6 +278,30 @@ router.post('/', authenticate, requireSeller, upload.array('images', 10), [
           [product.id, mediaUrl, index, mediaType]
         );
       }
+    }
+
+    try {
+      const recipientsResult = await pool.query(
+        `SELECT DISTINCT whatsapp_number
+         FROM users
+         WHERE whatsapp_number IS NOT NULL
+           AND TRIM(whatsapp_number) <> ''`
+      );
+      const recipients = recipientsResult.rows.map((row) => row.whatsapp_number);
+      const sellerName = `${req.user.first_name || ''} ${req.user.last_name || ''}`.trim() || 'Un utilisateur';
+      const shareUrl = `${buildShareBase(req)}/share/product/${product.id}`;
+
+      const broadcastResult = await broadcastPostCreated({
+        recipients,
+        authorName: sellerName,
+        postType,
+        productName: product.name,
+        shareUrl
+      });
+      console.log('WhatsApp broadcast result:', broadcastResult);
+    } catch (broadcastError) {
+      // Ne pas bloquer la creation du post si l'envoi WhatsApp echoue.
+      console.error('WhatsApp broadcast error:', broadcastError);
     }
 
     const postTypeLabels = {
